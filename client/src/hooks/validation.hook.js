@@ -1,34 +1,36 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import validator from "validator";
 
 export const useValidation = () => {
-  const [email, setEmail] = useState(false);
-  const [password, setPassword] = useState(false);
-  const [login, setLogin] = useState(false);
-
   const checkEmail = useCallback(e => {
     if (validator.isEmail(e)) {
-      setEmail(false);
+      return "";
     } else {
-      setEmail(true);
+      return "Email введен неверно!";
     }
   }, []);
 
   const checkPassword = useCallback((p, cp) => {
-    if (p === cp) {
-      setPassword(false);
-    } else {
-      setPassword(true);
-    }
+    if (validator.isLength(p, { min: 6 })) {
+      if (p === cp) {
+        return "";
+      } else {
+        return "Пароли не совпадают!";
+      }
+    } else return "Пароль слишком короткий!";
   }, []);
 
   const checkLogin = useCallback(l => {
     if (validator.isLength(l, { min: 1 })) {
-      setLogin(false);
+      return "";
     } else {
-      setLogin(true);
+      return "Пусто!";
     }
   }, []);
 
-  return { email, password, checkEmail, checkPassword, login, checkLogin };
+  return {
+    checkEmail,
+    checkPassword,
+    checkLogin
+  };
 };

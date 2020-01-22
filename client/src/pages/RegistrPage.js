@@ -4,7 +4,7 @@ import "./authPage.css";
 
 import { useValidation } from "../hooks/validation.hook";
 import { useHttp } from "../hooks/http.hook";
-import bcrypt from "bcryptjs";
+import { Link } from "react-router-dom";
 
 import {
   Button,
@@ -24,23 +24,19 @@ export default function AuthPage() {
     conPassword: ""
   });
   const [err, setErr] = useState("");
+  const [toast, setToast] = useState("");
 
-  const {
-    email,
-    checkEmail,
-    password,
-    checkPassword,
-    login,
-    checkLogin
-  } = useValidation();
+  const [vLogin, setVLogin] = useState("");
+  const [vPassword, setVPassword] = useState("");
+  const [vEmail, setVEmail] = useState("");
+
+  const { checkEmail, checkPassword, checkLogin } = useValidation();
   const { loading, request, error, clearError } = useHttp();
 
   useEffect(() => {
     if (error != null) {
       setErr(error);
       clearError();
-    } else {
-      setErr("");
     }
   }, [error, clearError]);
 
@@ -48,25 +44,29 @@ export default function AuthPage() {
     setForm({ ...form, [event.target.name]: event.target.value });
   };
 
-  const registrHandler = async () => {
-    const hashedPassword = await bcrypt.hash(form.password, 12);
+  const validHandler = () => {
+    const login = checkLogin(form.login);
+    const password = checkPassword(form.password, form.conPassword);
+    const email = checkEmail(form.email);
 
-    try {
-      const data = await request("/api/registr", "POST", {
-        login: form.login,
-        email: form.email,
-        password: hashedPassword
-      });
-      console.log("data", data);
-    } catch (e) {}
+    setVEmail(email);
+    setVLogin(login);
+    setVPassword(password);
+
+    registrHandler(login, password, email);
   };
 
-  const validHandler = () => {
-    checkEmail(form.email);
-    checkPassword(form.password, form.conPassword);
-    checkLogin(form.login);
-    if (!email && !password && !login) {
-      registrHandler();
+  const registrHandler = async (l, e, p) => {
+    if (l.length === 0 && e.length === 0 && p.length === 0) {
+      try {
+        const data = await request("/api/registr", "POST", {
+          login: form.login,
+          email: form.email,
+          password: form.password
+        });
+        setToast(data.message);
+        setErr("");
+      } catch (e) {}
     }
   };
 
@@ -78,6 +78,21 @@ export default function AuthPage() {
         style={{ height: "100vh" }}
       >
         <Grid.Column style={{ maxWidth: 450 }}>
+          {toast && (
+            <Message positive>
+              <Message.Content>
+                <Message.Header>{toast}</Message.Header>
+              </Message.Content>
+              <Button
+                name="sign-in"
+                as={Link}
+                to="/"
+                basic
+                color="teal"
+                content="Войти"
+              />
+            </Message>
+          )}
           <Header as="h2" color="teal" textAlign="center">
             Registration
           </Header>
@@ -92,9 +107,9 @@ export default function AuthPage() {
                   name="login"
                   onChange={changeHandler}
                 />
-                {login && (
+                {vLogin && (
                   <Label basic color="red" pointing="above">
-                    Is empty!
+                    {vLogin}
                   </Label>
                 )}
               </Form.Field>
@@ -107,9 +122,9 @@ export default function AuthPage() {
                   name="email"
                   onChange={changeHandler}
                 />
-                {email && (
+                {vEmail && (
                   <Label basic color="red" pointing="above">
-                    Is not a valid email!
+                    {vEmail}
                   </Label>
                 )}
               </Form.Field>
@@ -134,9 +149,9 @@ export default function AuthPage() {
                   name="conPassword"
                   onChange={changeHandler}
                 />
-                {password && (
+                {vPassword && (
                   <Label basic color="red" pointing="above">
-                    Passwords are not equal!
+                    {vPassword}
                   </Label>
                 )}
               </Form.Field>
@@ -151,7 +166,10 @@ export default function AuthPage() {
               </Button>
             </Segment>
           </Form>
-          {err !== "" && <Message error header={err} />}
+          <Message>
+            Есть аккаунт? <Link to="/">Войти</Link>
+          </Message>
+          {err && <Message error header={err} />}
         </Grid.Column>
       </Grid>
     </div>

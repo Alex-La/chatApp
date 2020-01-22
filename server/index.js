@@ -1,18 +1,19 @@
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
-const authRouter = require("./routes/auth.router");
+const registrRouter = require("./routes/registr.router");
+const loginRouter = require("./routes/login.router");
 const socketio = require("socket.io");
 const mongoose = require("mongoose");
 
 const PORT = 5000;
 const mongoUri =
-  "mongodb+srv://alex:qwe123ewq321@cluster0-jndww.mongodb.net/test?retryWrites=true&w=majority";
+  "mongodb+srv://alex:qwe123ewq321@chatcluster-rgqgt.mongodb.net/app?retryWrites=true&w=majority";
 
 const app = express();
 app.use(cors());
 app.use(express.json({ extended: true }));
-app.use("/api", authRouter);
+app.use("/api", registrRouter, loginRouter);
 
 const server = http.createServer(app);
 const io = socketio(server);
