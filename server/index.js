@@ -7,8 +7,7 @@ const socketio = require("socket.io");
 const mongoose = require("mongoose");
 
 const PORT = 5000;
-const mongoUri =
-  "mongodb+srv://alex:qwe123ewq321@chatcluster-rgqgt.mongodb.net/app?retryWrites=true&w=majority";
+const mongoUri = "mongodb://localhost:27017/chatApp";
 
 const app = express();
 app.use(cors());

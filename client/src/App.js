@@ -7,7 +7,7 @@ import { useAuth } from "./hooks/auth.hook";
 import Preloader from "./components/Preloader";
 
 function App() {
-  const { token, login, logout, userId, ready } = useAuth();
+  const { token, login, loginStr, logout, userId, ready } = useAuth();
   const isAuthenticated = !!token;
   const routes = useRoutes(isAuthenticated);
 
@@ -22,6 +22,7 @@ function App() {
         login,
         logout,
         userId,
+        loginStr,
         isAuthenticated
       }}
     >

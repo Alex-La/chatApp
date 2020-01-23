@@ -59,7 +59,7 @@ export default function AuthPage() {
           email: form.email,
           password: form.password
         });
-        auth.login(data.token, data.userId);
+        auth.login(data.token, data.userId, data.login);
       } catch (e) {}
     }
   };
