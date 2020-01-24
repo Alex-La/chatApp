@@ -5,6 +5,7 @@ const registrRouter = require("./routes/registr.router");
 const loginRouter = require("./routes/login.router");
 const socketio = require("socket.io");
 const mongoose = require("mongoose");
+const Users = require("./models/Users");
 
 const PORT = 5000;
 const mongoUri = "mongodb://localhost:27017/chatApp";
@@ -18,6 +19,11 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 io.on("connect", socket => {
+  console.log("connect");
+  socket.on("users", async login => {
+    console.log(login);
+    await Users.findOneAndUpdate({ login }, { online: true }, { new: true });
+  });
   socket.on("disconnect", () => {
     console.log("disconnect");
   });

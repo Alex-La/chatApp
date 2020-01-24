@@ -10,11 +10,14 @@ import {
   Checkbox
 } from "semantic-ui-react";
 
+import Content from "../components/main/Content";
+
 export default function MainPage() {
   const [visible, setVisible] = useState(false);
   const [menuWidth, setMenuWidth] = useState("thin");
   const [footerMenu, setFooterMenu] = useState(true);
   const [activeItem, setActiveItem] = useState("");
+  const [link, setLink] = useState("");
 
   useEffect(() => {
     if (window.innerWidth > 768) {
@@ -40,11 +43,25 @@ export default function MainPage() {
         visible={visible}
         width={menuWidth}
       >
-        <Menu.Item as="a">
+        <Menu.Item
+          as="a"
+          name="chats"
+          onClick={() => {
+            setLink("chats");
+            setVisible(false);
+          }}
+        >
           <Label color="teal">1</Label>Chats
         </Menu.Item>
-        <Menu.Item as="a">
-          <Label color="teal">2</Label>Games
+        <Menu.Item
+          as="a"
+          name="users"
+          onClick={() => {
+            setLink("users");
+            setVisible(false);
+          }}
+        >
+          <Label color="teal">2</Label>Users
         </Menu.Item>
         <Menu.Item as="a">
           <Label color="teal">3</Label>Channels
@@ -57,7 +74,7 @@ export default function MainPage() {
         }
       >
         <Segment basic>
-          <Header as="h3">Application Content</Header>
+          <Content link={link} />
         </Segment>
         {footerMenu && (
           <div className="navbar">
@@ -66,8 +83,8 @@ export default function MainPage() {
                 <Checkbox toggle />
               </Menu.Item>
               <Menu.Item
-                name="sell"
-                active={activeItem === "sell"}
+                name="chats"
+                active={activeItem === "chats"}
                 onClick={handleItemClick}
               >
                 {" "}
