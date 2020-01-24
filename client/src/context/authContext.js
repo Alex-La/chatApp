@@ -6,5 +6,6 @@ export const AuthContext = createContext({
   loginStr: null,
   login: () => {},
   logout: () => {},
-  isAuthenticated: false
+  isAuthenticated: false,
+  endpoint: "http://localhost:5000"
 });

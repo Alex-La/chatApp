@@ -20,10 +20,7 @@ const io = socketio(server);
 
 io.on("connect", socket => {
   console.log("connect");
-  socket.on("users", async login => {
-    console.log(login);
-    await Users.findOneAndUpdate({ login }, { online: true }, { new: true });
-  });
+
   socket.on("disconnect", () => {
     console.log("disconnect");
   });
@@ -34,7 +31,8 @@ const start = async () => {
     await mongoose.connect(mongoUri, {
       useCreateIndex: true,
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useFindAndModify: false
     });
     server.listen(PORT, () => console.log("server ready at " + PORT));
   } catch (error) {
